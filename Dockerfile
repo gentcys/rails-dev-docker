@@ -46,11 +46,13 @@ RUN chmod +x /etc/service/mysql/run
 
 ######### Setup PostgreSQL #######
 RUN groupadd -r rails && useradd -r -g rails rails
-RUN touch logfile && chown postgres:postgres logfile && chmod 755 logfile
-USER postgres
-RUN /usr/lib/postgresql/9.5/bin/initdb -D /var/lib/postgresql/9.5/data -U postgres >> logfile 2>&1 &
-RUN /usr/lib/postgresql/9.5/bin/postgres -D /var/lib/postgresql/9.5/data >> logfile 2>&1 &
-# RUN createuser --superuser rails
-USER root
+RUN mkdir -p /usr/local/pgsql/data
+RUN chown postgres:postgres /usr/local/pgsql/data
+RUN su - postgres -c '/usr/lib/postgresql/9.5/bin/initdb -A trust -D /usr/local/pgsql/data/ -U postgres'
+
+######### Setup PostgreSQL Daemon ########
+RUN mkdir /etc/service/postgres
+COPY postgresql.sh /etc/service/postgres/run
+RUN chmod +x /etc/service/postgres/run
 
 CMD ["/sbin/my_init"]
