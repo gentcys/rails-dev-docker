@@ -1,5 +1,6 @@
 FROM phusion/baseimage:latest
 
+ENV DEBIAN_FRONTEND noninteractive
 RUN locale-gen en_US.UTF-8
 
 ENV LANGUAGE en_US.UTF-8
@@ -8,29 +9,61 @@ ENV LC_CTYPE en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV TERM xterm
 
-RUN apt-get update && apt-get upgrade -y -o Dpkg::Options::="--force-confold"
+RUN apt-get update && apt-get -y install --no-install-recommends \
+                              bash \
+                              git \
+                              curl \
+                              zlib1g-dev \
+                              build-essential \
+                              libssl-dev \
+                              libreadline-dev \
+                              libyaml-dev \
+                              libxml2-dev \
+                              libxslt1-dev \
+                              libcurl4-openssl-dev \
+                              python-software-properties \
+                              libffi-dev \
+                              nodejs \
+                              sqlite3 \
+                              libsqlite3-dev \
+                              memcached \
+                              mysql-server \
+                              mysql-client \
+                              libmysqlclient-dev \
+                              postgresql \
+                              postgresql-client \
+                              postgresql-contrib \
+                              libpq-dev
 
-RUN install_clean bash git curl build-essential nodejs sqlite3 libsqlite3-dev memcached \
-    mysql-server mysql-client libmysqlclient-dev \
-    postgresql postgresql-client postgresql-contrib libpq-dev
+# Use /bin/bash instead of /bin/sh
+SHELL ["/bin/bash", "-c"]
 
-RUN curl -OL https://cache.ruby-lang.org/pub/ruby/2.5/ruby-2.5.0.tar.gz
+# Add a system user
+RUN useradd -r -m rails
+USER rails
+WORKDIR /home/rails
 
-RUN tar -zxf ruby-2.5.0.tar.gz && rm -f ruby-2.5.0.tar.gz
+# Install rbenv
+RUN git clone --depth 1 https://github.com/rbenv/rbenv.git /home/rails/.rbenv
+RUN echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> /home/rails/.bashrc
+# ENV PATH /home/rails/.rbenv/bin:$PATH
+RUN echo 'eval "$(rbenv init -)"' >> /home/rails/.bashrc
+RUN . /home/rails/.bashrc
 
-WORKDIR /ruby-2.5.0
+# Install rbenv plugin rbenv-build
+RUN mkdir -p /home/rails/.rbenv/plugins
+RUN git clone --depth 1 https://github.com/rbenv/ruby-build.git /home/rails/.rbenv/plugins/ruby-build
 
-RUN ./configure --prefix=/usr > /dev/null 2>&1
-RUN make > /dev/null 2>&1
-RUN make install > /dev/null 2>&1
+# Install gems without documents
+RUN echo 'gem: --no-document' > /home/rails/.gemrc
 
+# Install Ruby programming language
+RUN rbenv install 2.4.3
+
+# Specified the mountpoint while run the container: docker run -v (directory):/home/rails/rails
+VOLUME /home/rails/rails
+USER root
 WORKDIR /
-
-RUN rm -rf /ruby-2.5.0
-
-# WORKDIR /home/rails
-
-# RUN git clone https://github.com/rails/rails.git && cd rails
 
 ######## Setup MySQL ########
 RUN mkdir -p /var/run/mysqld
@@ -45,7 +78,6 @@ COPY mysql.sh /etc/service/mysql/run
 RUN chmod +x /etc/service/mysql/run
 
 ######### Setup PostgreSQL #######
-RUN groupadd -r rails && useradd -r -g rails rails
 RUN mkdir -p /usr/local/pgsql/data
 RUN chown postgres:postgres /usr/local/pgsql/data
 RUN su - postgres -c '/usr/lib/postgresql/9.5/bin/initdb -A trust -D /usr/local/pgsql/data/ -U postgres'
