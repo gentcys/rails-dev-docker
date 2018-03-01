@@ -84,7 +84,7 @@ RUN su - postgres -c '/usr/lib/postgresql/9.5/bin/initdb -A trust -D /usr/local/
 
 ######### Setup PostgreSQL Daemon ########
 RUN mkdir /etc/service/postgres
-COPY postgresql.sh /etc/service/postgres/run
+COPY postgres.sh /etc/service/postgres/run
 RUN chmod +x /etc/service/postgres/run
 
 CMD ["/sbin/my_init"]
