@@ -21,6 +21,8 @@ RUN apt-get update && apt-get -y install --no-install-recommends \
                               libxml2-dev \
                               libxslt1-dev \
                               libcurl4-openssl-dev \
+                              libncurses5-dev \
+                              libncursesw5-dev \
                               python-software-properties \
                               libffi-dev \
                               nodejs \
