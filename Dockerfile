@@ -46,7 +46,7 @@ WORKDIR /home/rails
 # Install rbenv
 RUN git clone --depth 1 https://github.com/rbenv/rbenv.git /home/rails/.rbenv
 RUN echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> /home/rails/.bashrc
-# ENV PATH /home/rails/.rbenv/bin:$PATH
+ENV PATH /home/rails/.rbenv/bin:$PATH
 RUN echo 'eval "$(rbenv init -)"' >> /home/rails/.bashrc
 RUN . /home/rails/.bashrc
 
@@ -59,6 +59,13 @@ RUN echo 'gem: --no-document' > /home/rails/.gemrc
 
 # Install Ruby programming language
 RUN rbenv install 2.4.3
+RUN rbenv global 2.4.3
+RUN gem install bundler
+RUN rbenv rehash
+
+# Install dependencies of Rails
+WORKDIR /home/rails/rails
+RUN bundle install
 
 # Specified the mountpoint while run the container: docker run -v (directory):/home/rails/rails
 VOLUME /home/rails/rails
