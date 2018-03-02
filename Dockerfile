@@ -29,13 +29,15 @@ RUN apt-get update && apt-get -y install --no-install-recommends \
                               sqlite3 \
                               libsqlite3-dev \
                               memcached \
+                              redis-server \
                               mysql-server \
                               mysql-client \
                               libmysqlclient-dev \
                               postgresql \
                               postgresql-client \
                               postgresql-contrib \
-                              libpq-dev
+                              libpq-dev \
+                              libmagickwand-dev
 
 # Use /bin/bash instead of /bin/sh
 SHELL ["/bin/bash", "-c"]
@@ -47,8 +49,8 @@ WORKDIR /home/rails
 
 # Install rbenv
 RUN git clone --depth 1 https://github.com/rbenv/rbenv.git /home/rails/.rbenv
-RUN echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> /home/rails/.bashrc
-ENV PATH /home/rails/.rbenv/bin:$PATH
+ENV PATH /home/rails/.rbenv/shims:/home/rails/.rbenv/bin:$PATH
+RUN echo 'export PATH="/home/rails/.rbenv/bin:$PATH"' >> /home/rails/.bashrc
 RUN echo 'eval "$(rbenv init -)"' >> /home/rails/.bashrc
 RUN . /home/rails/.bashrc
 
@@ -65,12 +67,9 @@ RUN rbenv global 2.4.3
 RUN gem install bundler
 RUN rbenv rehash
 
-# Install dependencies of Rails
-WORKDIR /home/rails/rails
-RUN bundle install
-
 # Specified the mountpoint while run the container: docker run -v (directory):/home/rails/rails
 VOLUME /home/rails/rails
+
 USER root
 WORKDIR /
 
@@ -95,5 +94,19 @@ RUN su - postgres -c '/usr/lib/postgresql/9.5/bin/initdb -A trust -D /usr/local/
 RUN mkdir /etc/service/postgres
 COPY postgres.sh /etc/service/postgres/run
 RUN chmod +x /etc/service/postgres/run
+
+######### Setup Memcached Daemon #########
+RUN touch /var/log/memcached.log
+RUN chown -R memcache:memcache /var/log/memcached.log
+RUN mkdir /etc/service/memcached
+COPY memcached.sh /etc/service/memcached/run
+RUN chmod +x /etc/service/memcached/run
+
+######### Setup Redis Daemon #############
+RUN touch /var/log/redis-server.log
+RUN chown -R redis:redis /var/log/redis-server.log
+RUN mkdir /etc/service/redis
+COPY redis.sh /etc/service/redis/run
+RUN chmod +x /etc/service/redis/run
 
 CMD ["/sbin/my_init"]
