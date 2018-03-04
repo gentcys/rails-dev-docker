@@ -37,7 +37,11 @@ RUN apt-get update && apt-get -y install --no-install-recommends \
                               postgresql-client \
                               postgresql-contrib \
                               libpq-dev \
-                              libmagickwand-dev
+                              libmagickwand-dev \
+                              ffmpeg \
+                              mupdf-tools \
+                              imagemagick \
+                              graphicsmagick
 
 # Use /bin/bash instead of /bin/sh
 SHELL ["/bin/bash", "-c"]
