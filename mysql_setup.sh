@@ -37,13 +37,8 @@ if [ ! -f "$tfile" ]; then
 fi
 
 cat <<EOF > $tfile
-USE mysql;
 FLUSH PRIVILEGES;
-CREATE USER 'rails'@'localhost';
-GRANT ALL PRIVILEGES ON *.* to 'rails'@'localhost' WITH GRANT OPTION;
-CREATE DATABASE activerecord_unittest  DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
-CREATE DATABASE activerecord_unittest2  DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
-CREATE DATABASE inexistent_activerecord_unittest  DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+CREATE USER 'rails'@'localhost' IDENTIFIED BY 'rails';
 GRANT ALL PRIVILEGES ON activerecord_unittest.* to 'rails'@'localhost';
 GRANT ALL PRIVILEGES ON activerecord_unittest2.* to 'rails'@'localhost';
 GRANT ALL PRIVILEGES ON inexistent_activerecord_unittest.* to 'rails'@'localhost';
