@@ -113,4 +113,7 @@ RUN mkdir /etc/service/redis
 COPY redis.sh /etc/service/redis/run
 RUN chmod +x /etc/service/redis/run
 
+######### Redis
+RUN sed 's/^stop-writes-on-bgsave-error yes/stop-writes-on-bgsave-error no/' -i /etc/redis/redis.conf
+
 CMD ["/sbin/my_init"]
