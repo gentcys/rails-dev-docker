@@ -21,12 +21,19 @@ This project was inspired by [rails-dev-box](https://github.com/rails/rails-dev-
     `host $ docker run -v /Users/<your username>/rails-dev-docker/rails:/home/rails/rails -d --name rails-dev-docker rails-dev-docker`
 
 * Enter the running container:
-	
-    Install gems  
-    `$ su rails && cd /home/rails/rails && bundle install`  
-    Create postgresql user.  
-    `$ createuser --superuser rails`.  
-    Create databases in mysql and postgresql.  
-    `$ bundle exec rake db:create`.  
-    Execute test  
+
+    Install gems
+
+    `$ su rails && cd /home/rails/rails && bundle install && exit`
+
+    Create postgresql user
+
+    `$ su postgres && createuser --superuser rails && exit`
+
+    Create databases in mysql and postgresql
+
+    `$ su rails && cd $HOME/rails/activerecord && bundle exec rake db:create`
+
+    Execute test
+
     `$ bundle exec rake test`
