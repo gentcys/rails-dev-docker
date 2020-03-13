@@ -2,3 +2,5 @@ RUBY_VERSION=2.6
 
 # Point to the path of code of Rails framework on you host
 RAILS_CODE_PATH=../../official/rails
+
+MYSQL_VERSION=8
