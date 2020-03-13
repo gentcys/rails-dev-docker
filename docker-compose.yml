@@ -9,9 +9,12 @@ services:
         args:
           - RUBY_VERSION=${RUBY_VERSION}
         volumes:
-          - .:/usr/src/app
+          - ${RAILS_CODE_PATH}:/usr/src/rails
         depends_on:
-          - database
+          - mysql
+          - postgres
+          - redis
+          - memcached
 
 ##################### MySQL #####################
     mysql:
