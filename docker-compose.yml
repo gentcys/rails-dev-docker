@@ -8,13 +8,13 @@ services:
         context: ./workspace
         args:
           - RUBY_VERSION=${RUBY_VERSION}
-        volumes:
-          - ${RAILS_CODE_PATH}:/usr/src/rails
-        depends_on:
-          - mysql
-          - postgres
-          - redis
-          - memcached
+      volumes:
+        - ${RAILS_CODE_PATH}:/usr/src/rails
+      depends_on:
+        - mysql
+        - postgres
+        - redis
+        - memcached
 
 ##################### MySQL #####################
     mysql:
