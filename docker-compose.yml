@@ -37,8 +37,9 @@ services:
 
 ##################### Redis #####################
     redis:
-      build:
-        context: ./redis
+      image: redis:${REDIS_VERSION}
+      restart: always
+      volumes: redis:/data
 
 ##################### Memcached #####################
     memcached:
@@ -49,4 +50,6 @@ volumes:
   mysql:
     driver: local
   postgres:
+    driver: local
+  redis:
     driver: local
