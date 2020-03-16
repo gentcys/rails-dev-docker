@@ -10,6 +10,7 @@ services:
           - RUBY_VERSION=${RUBY_VERSION}
       volumes:
         - ${RAILS_CODE_PATH}:/usr/src/rails
+      tty: true
       depends_on:
         - mysql
         - postgres
