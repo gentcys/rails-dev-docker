@@ -24,6 +24,9 @@ services:
       restart: always
       volumes:
         - mysql:/var/lib/mysql
+      ports:
+        - "3306:3306"
+        - "33060:33060"
       environment:
         MYSQL_ROOT_PASSWORD: root
 
@@ -33,6 +36,8 @@ services:
       restart: always
       volumes:
         - postgres:/var/lib/postgresql/data
+      ports:
+        - "5432:5432"
       environment:
         POSTGRES_PASSWORD: root
 
@@ -42,11 +47,15 @@ services:
       restart: always
       volumes:
         - redis:/data
+      ports:
+        - "6379:6379"
 
 ##################### Memcached #####################
     memcached:
       image: memcached:${MEMCACHED_VERSION}
       restart: always
+      ports:
+        - "11211:11211"
 
 volumes:
   mysql:
