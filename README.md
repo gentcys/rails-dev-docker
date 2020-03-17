@@ -4,42 +4,26 @@
 
 This project was inspired by [rails-dev-box](https://github.com/rails/rails-dev-box)
 
-## How to Build
+## How to Use
 
-    host $ docker build --no-cache -t rails-dev-docker .
+1. Build and start up docker containers
 
-## Recommended workflow
+```
+host $ docker-compose up -d
+```
 
-* Pull the image
+2. Install dependencies
 
-        host $ docker pull gentcys/rails-dev-docker
-        host $ mkdir -p rails-dev-docker
+```
+host $ docker-compose exec workspace bash
+host $ yarn install
+host $ gem install bundler
+host $ bundle install
+```
 
-* Clone your Rails fork into the rails-dev-docker directory on the host computer:
+3. Make changes to Rails core code and run test
 
-        host $ cd rails-dev-docker
-        host $ git clone https://github.com/<your username>/rails.git
-        host $ docker run -v /Users/<your username>/rails-dev-docker/rails:/home/rails/rails -d --name rails-dev-docker rails-dev-docker
-
-* Enter the running container:
-
-    Create postgresql user
-
-        $ su postgres
-        $ createuser --superuser rails
-        $ exit
-
-    Install gems
-
-        $ su rails
-        $ cd /home/rails/rails
-        $ bundle install
-
-    Create databases in mysql and postgresql
-
-        $ cd $HOME/rails/activerecord
-        $ bundle exec rake db:create
-
-    Execute test
-
-        $ bundle exec rake test
+```
+host $ cd activemodel
+host $ bundle exec rake test
+```
